@@ -12,5 +12,6 @@ func main() {
 		panic(err)
 	}
 	database.DbConnection(config)
+	database.JwtConnection(config)
 	routes.HandleRequest(config)
 }

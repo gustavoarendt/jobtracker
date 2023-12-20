@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 
+	"github.com/go-chi/jwtauth"
 	"github.com/gustavoarendt/jobtracker/configs"
 	"github.com/gustavoarendt/jobtracker/internal/entities"
 	"gorm.io/driver/postgres"
@@ -10,8 +11,10 @@ import (
 )
 
 var (
-	DB  *gorm.DB
-	err error
+	DB           *gorm.DB
+	err          error
+	Jwt          *jwtauth.JWTAuth
+	JwtExpiresIn int
 )
 
 func DbConnection(config *configs.Config) {
@@ -21,4 +24,9 @@ func DbConnection(config *configs.Config) {
 		panic(err)
 	}
 	DB.AutoMigrate(&entities.User{}, &entities.Company{}, &entities.Job{})
+}
+
+func JwtConnection(config *configs.Config) {
+	Jwt = config.TokenAuth
+	JwtExpiresIn = config.JWTExpiresIn
 }

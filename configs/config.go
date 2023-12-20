@@ -17,7 +17,7 @@ type Config struct {
 	DBTimezone   string `mapstructure:"DB_TIMEZONE"`
 	ServerPort   string `mapstructure:"SERVER_PORT"`
 	JWTSecret    string `mapstructure:"SERVER_PORT"`
-	JWTExpiresIn string `mapstructure:"JWT_EXPIRES_IN"`
+	JWTExpiresIn int    `mapstructure:"JWT_EXPIRES_IN"`
 	TokenAuth    *jwtauth.JWTAuth
 }
 

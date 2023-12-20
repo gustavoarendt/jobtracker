@@ -10,10 +10,10 @@ type UserDB struct {
 }
 
 func NewUser(db *gorm.DB) *UserDB {
-	return &UserDB{DB: db}
+	return &UserDB{DB: DB}
 }
 
-func (u *UserDB) Create(user *entities.User) error {
+func (u *UserDB) CreateUser(user *entities.User) error {
 	return u.DB.Create(user).Error
 }
 

@@ -12,6 +12,9 @@ import (
 func HandleRequest(config *configs.Config) {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+
 	r.Post("/users", controllers.CreateUser)
+	r.Post("/users/login", controllers.Login)
+
 	http.ListenAndServe(config.ServerPort, r)
 }
