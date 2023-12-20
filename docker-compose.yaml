@@ -2,12 +2,26 @@ version: '3.8'
 
 services:
   rabbitmq:
+    container_name: rabbitmq
     image: rabbitmq:3.12.10-management
     ports:
       - 5672:5672
       - 15672:15672
     volumes:
-      - ./.rabbitmq:/var/lib/rabbitmq
+      - ./.data/rabbitmq:/var/lib/rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
+
+  postgres:
+    container_name: postgres
+    image: postgres:14.10
+    ports:
+      - 5432:5432
+    volumes:
+      - ./.data/postgres:/var/lib/postgresql/data
+      - ./.data/sql:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=jobtracker
