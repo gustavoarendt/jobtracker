@@ -17,7 +17,7 @@ func (j *JobDB) Create(job *entities.Job) error {
 	return j.DB.Create(job).Error
 }
 
-func (j *JobDB) FindById(id uint) (*entities.Job, error) {
+func (j *JobDB) FindById(id uint64) (*entities.Job, error) {
 	job := entities.Job{}
 	if err := j.DB.Where("id = ?", id).First(&job).Error; err != nil {
 		return nil, err
@@ -37,6 +37,6 @@ func (j *JobDB) Update(job *entities.Job) error {
 	return j.DB.Save(job).Error
 }
 
-func (j *JobDB) Delete(job *entities.Job) error {
-	return j.DB.Delete(job).Error
+func (j *JobDB) Delete(id string) error {
+	return j.DB.Where("id = ?", id).Delete(&entities.Job{}).Error
 }
