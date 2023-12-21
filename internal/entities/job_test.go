@@ -7,7 +7,7 @@ import (
 )
 
 func TestJob_Instance(t *testing.T) {
-	job, err := NewJob("Test Job", "Test Description", "Refused", "BRL", "Portuguese", 1, 1000.00, 1)
+	job, err := NewJob("Test Job", "Test Description", "Refused", "BRL", "Portuguese", 1, 1, 1000.00, 1)
 	assert.Nil(t, err)
 	assert.NotNil(t, job)
 	assert.Equal(t, "Test Job", job.Name)
@@ -23,31 +23,31 @@ func TestJob_Instance(t *testing.T) {
 }
 
 func TestJob_ValidateNameRequired(t *testing.T) {
-	job, err := NewJob("", "Test Description", "Refused", "BRL", "Portuguese", 1, 1000.00, 1)
+	job, err := NewJob("", "Test Description", "Refused", "BRL", "Portuguese", 1, 1, 1000.00, 1)
 	assert.NotNil(t, err)
 	assert.Nil(t, job)
 }
 
 func TestJob_ValidateCurrencyLength(t *testing.T) {
-	job, err := NewJob("Test Job", "Test Description", "Refused", "Real Brasileiro", "Portuguese", 1, 1000.00, 1)
+	job, err := NewJob("Test Job", "Test Description", "Refused", "Real Brasileiro", "Portuguese", 1, 1, 1000.00, 1)
 	assert.NotNil(t, err)
 	assert.Nil(t, job)
 }
 
 func TestJob_ValidateInterestRange(t *testing.T) {
-	job, err := NewJob("Test Job", "Test Description", "Refused", "BRL", "Portuguese", 1, 1000.00, 10)
+	job, err := NewJob("Test Job", "Test Description", "Refused", "Real Brasileiro", "Portuguese", 1, 1, 1000.00, 10)
 	assert.NotNil(t, err)
 	assert.Nil(t, job)
 }
 
 func TestJob_ValidateCompanyIDRequired(t *testing.T) {
-	job, err := NewJob("Test Job", "Test Description", "Refused", "BRL", "Portuguese", 0, 1000.00, 1)
+	job, err := NewJob("Test Job", "Test Description", "Refused", "Real Brasileiro", "Portuguese", 1, 1, 1000.00, 10)
 	assert.NotNil(t, err)
 	assert.Nil(t, job)
 }
 
 func TestJob_ValidateStatusRequired(t *testing.T) {
-	job, err := NewJob("Test Job", "Test Description", "", "BRL", "Portuguese", 1, 1000.00, 1)
+	job, err := NewJob("Test Job", "Test Description", "", "BRL", "Portuguese", 1, 1, 1000.00, 1)
 	assert.NotNil(t, err)
 	assert.Nil(t, job)
 }

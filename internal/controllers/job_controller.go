@@ -2,22 +2,26 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
+	"github.com/go-chi/chi"
+	"github.com/go-chi/jwtauth"
 	"github.com/gustavoarendt/jobtracker/internal/database"
 	"github.com/gustavoarendt/jobtracker/internal/dto"
 	"github.com/gustavoarendt/jobtracker/internal/entities"
 )
 
 func CreateJob(w http.ResponseWriter, r *http.Request) {
+	userId := getUserIdFromContext(r)
 	var job dto.CreateJobInputModel
 	err := json.NewDecoder(r.Body).Decode(&job)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	j, err := entities.NewJob(job.Name, job.Description, job.Status, job.Currency, job.Language, job.Id_company, job.Expected_salary, job.Interest)
+	j, err := entities.NewJob(job.Name, job.Description, job.Status, job.Currency, job.Language, job.Id_company, userId, job.Expected_salary, job.Interest)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -32,7 +36,8 @@ func CreateJob(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetJobs(w http.ResponseWriter, r *http.Request) {
-	jobs, err := database.NewJob(database.DB).FindAll()
+	userId := getUserIdFromContext(r)
+	jobs, err := database.NewJob(database.DB).FindAll(userId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -57,10 +62,12 @@ func GetJobs(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetJob(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Query().Get("id")
+	id := chi.URLParam(r, "id")
+	userId := getUserIdFromContext(r)
 	idUint, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
 		return
 	}
 	job, err := database.NewJob(database.DB).FindById(idUint)
@@ -68,17 +75,22 @@ func GetJob(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	if job.Id_user != userId {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
 	json.NewEncoder(w).Encode(job)
 }
 
 func UpdateJob(w http.ResponseWriter, r *http.Request) {
+	userId := getUserIdFromContext(r)
 	var job dto.CreateJobInputModel
 	err := json.NewDecoder(r.Body).Decode(&job)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	j, err := entities.NewJob(job.Name, job.Description, job.Status, job.Currency, job.Language, job.Id_company, job.Expected_salary, job.Interest)
+	j, err := entities.NewJob(job.Name, job.Description, job.Status, job.Currency, job.Language, job.Id_company, userId, job.Expected_salary, job.Interest)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -100,4 +112,11 @@ func DeleteJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+}
+
+func getUserIdFromContext(r *http.Request) uint64 {
+	_, claims, _ := jwtauth.FromContext(r.Context())
+	userIdString := fmt.Sprintf("%v", claims["user_id"])
+	userId, _ := strconv.ParseUint(userIdString, 10, 64)
+	return userId
 }

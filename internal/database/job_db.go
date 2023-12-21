@@ -25,9 +25,9 @@ func (j *JobDB) FindById(id uint64) (*entities.Job, error) {
 	return &job, nil
 }
 
-func (j *JobDB) FindAll() ([]entities.Job, error) {
+func (j *JobDB) FindAll(id uint64) ([]entities.Job, error) {
 	var jobs []entities.Job
-	if err := j.DB.Find(&jobs).Error; err != nil {
+	if err := j.DB.Where("id = ?", id).Find(&jobs).Error; err != nil {
 		return nil, err
 	}
 	return jobs, nil

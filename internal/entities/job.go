@@ -21,22 +21,24 @@ type Job struct {
 	Currency        string    `gorm:"type:varchar(3)" json:"currency"`
 	Language        string    `gorm:"type:varchar(50)" json:"language"`
 	Id_company      uint64    `gorm:"type:numeric(20);not null" json:"id_company"`
+	Id_user         uint64    `gorm:"type:numeric(20);not null" json:"id_user"`
 	Expected_salary float64   `gorm:"type:numeric(15,2)" json:"expected_salary"`
 	Interest        int       `gorm:"type:numeric(1);not null" json:"interest"`
 	Created_at      time.Time `gorm:"type:timestamp" json:"created_at"`
 	Updated_at      time.Time `gorm:"type:timestamp" json:"updated_at"`
 }
 
-func NewJob(name, description, status, currency, language string, id_company uint64, expected_salary float64, interest int) (*Job, error) {
+func NewJob(name, description, status, currency, language string, id_company, id_user uint64, expected_salary float64, interest int) (*Job, error) {
 	job := &Job{
 		Name:            name,
 		Description:     description,
-		Id_company:      id_company,
 		Expected_salary: expected_salary,
 		Interest:        interest,
 		Status:          status,
 		Currency:        currency,
 		Language:        language,
+		Id_company:      id_company,
+		Id_user:         id_user,
 		Created_at:      time.Now(),
 		Updated_at:      time.Now(),
 	}

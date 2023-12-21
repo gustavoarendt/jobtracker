@@ -49,8 +49,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, token, _ := database.Jwt.Encode(map[string]interface{}{
-		"sub": u.ID,
-		"exp": time.Now().Add(time.Minute * time.Duration(database.JwtExpiresIn)).Unix(),
+		"sub":     u.ID,
+		"user_id": u.ID,
+		"exp":     time.Now().Add(time.Minute * time.Duration(database.JwtExpiresIn)).Unix(),
 	})
 
 	accessToken := struct {

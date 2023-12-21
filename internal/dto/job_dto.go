@@ -7,6 +7,7 @@ type CreateJobInputModel struct {
 	Currency        string  `json:"currency"`
 	Language        string  `json:"language"`
 	Id_company      uint64  `json:"id_company"`
+	Id_user         uint64  `json:"id_user"`
 	Expected_salary float64 `json:"expected_salary"`
 	Interest        int     `json:"interest"`
 }
